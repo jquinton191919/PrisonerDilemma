@@ -12,21 +12,14 @@ public class Main {
 		}
 		else{
 			prisoners.add(new Prisoner("J. Quinton", true, Prisoner.BAYESIAN));
-			//prisoners.add(new Prisoner("Scott Alexander", false, Prisoner.TIT_FOR_TAT));
-			//prisoners.add(new Prisoner("Robin Hanson", false, Prisoner.TIT_FOR_TAT));
 			//prisoners.add(new Prisoner("Lucifer Diabolos", true, Prisoner.DEFECT_BOT));
 			//prisoners.add(new Prisoner("Satan Asmodeus", true, Prisoner.DEFECT_BOT));
 			//prisoners.add(new Prisoner("God", true, Prisoner.RANDOM));
 			//prisoners.add(new Prisoner("Homeopathy", false, Prisoner.RANDOM));
 			//prisoners.add(new Prisoner("Moldbug", true, Prisoner.DEFECT_BIAS));
-			//prisoners.add(new Prisoner("Michael Anissimov", true, Prisoner.DEFECT_BIAS));
-			//prisoners.add(new Prisoner("Ozy", false, Prisoner.COOPERATE_BIAS));
-			//prisoners.add(new Prisoner("Leah", false, Prisoner.COOPERATE_BIAS));
 			//prisoners.add(new Prisoner("Fooligan Harry", false, Prisoner.COOPERATE_BOT));
 			//prisoners.add(new Prisoner("Lloyd Christmas", false, Prisoner.COOPERATE_BOT));
 			
-			System.out.println( Math.sqrt(12) * Math.sqrt(12) );
-			System.out.println( Stats.sqrt(-81) );
 		}
 		
 
