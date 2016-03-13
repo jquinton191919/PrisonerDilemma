@@ -2,8 +2,6 @@ package dilemma;
 
 import java.util.ArrayList;
 
-
-
 //class to keep a record of previous behavior of prisoners, i.e. a database
 public class PrisonerTree {
 	
@@ -35,7 +33,15 @@ public class PrisonerTree {
 			
 			//rotate if this is intended to be an AVL tree
 			if(isAVL) {
-				
+				//check if left node's height is 2 higher than right node's height
+				if( height(p.left) - height(p.right) == 2 ) {
+					
+					//if so, check whether the current name was inserted to the left
+	            	if( name.compareToIgnoreCase(p.left.name) < 0 ) p = rotateRight(p);
+	            	
+	            	//if it was inserted on the right, then double rotation
+	            	else p = rotateLeftRight(p);
+	            }
 			}
 		}
 		else if (name.compareToIgnoreCase(p.name) > 0) {
@@ -44,7 +50,15 @@ public class PrisonerTree {
 			
 			//rotate if this is intended to be an AVL tree
 			if(isAVL) {
-				
+				//check if right node's height is 2 higher than left node's height
+				if( height(p.right) - height(p.left) == 2 ) {
+					
+					//if so, check whether the current name was inserted to the right
+	            	if( name.compareToIgnoreCase(p.right.name) > 0 ) p = rotateLeft(p);
+	            	
+	            	//if it was inserted on the left, then double rotation
+	            	else p = rotateRightLeft(p);
+	            }
 			}
 		}
 		
@@ -232,7 +246,6 @@ public class PrisonerTree {
             printPostOrder(p.right);
             System.out.println(p.name + ", "+ Prisoner.getBehavior(p));
             }
-    	
         }
     
     //L-x-R, return type of ArrayList<Prisoner>
@@ -249,6 +262,6 @@ public class PrisonerTree {
     	}
     	
     }
-   
+    
     
 }

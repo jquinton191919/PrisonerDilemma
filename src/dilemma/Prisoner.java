@@ -20,8 +20,7 @@ public class Prisoner {
 	
 	//for the bayesian
 	public int numDefects = 0;
-	public double [] priors, conditionals;
-	public Stats probability;
+	public double [] priors, conditionals, pRetaliates, pEgivenRetaliates;
 	public boolean retaliates = false;
 	
 	
@@ -29,6 +28,10 @@ public class Prisoner {
 	@SuppressWarnings("unused")
 	private Prisoner() {}
 	
+	/*****
+	 * Constructor for Prisoner object
+	 * @param p - Prisoner object
+	 * *********/
 	public Prisoner(Prisoner p) {
 		name = p.name;
 		defect = p.defect;
@@ -38,23 +41,36 @@ public class Prisoner {
 		initBayesian();
 	}
 	
+	/*****
+	 * Constructor for Prisoner object
+	 * @param fullName - string for the prisoner's name
+	 * @param b - boolean to denote whether the prisoner's first action is to defect
+	 * @param p - integer denoting prisoner's personality
+	 * *********/
 	public Prisoner(String fullName, boolean b, int p) {
 		
 		name = fullName;
 		defect = b;
 		personality = p;
-		if ( (personality == Prisoner.BAYESIAN) || (personality == Prisoner.TIT_FOR_TAT) ) ptree = new PrisonerTree();
+		if ( (personality == Prisoner.BAYESIAN) || (personality == Prisoner.TIT_FOR_TAT) ) ptree = new PrisonerTree(true);
 		bias = 0.65;
 		
 		initBayesian();
 	}
 	
+	/*****
+	 * Constructor for Prisoner object
+	 * @param fullName - string for the prisoner's name
+	 * @param b - boolean to denote whether the prisoner's first action is to defect
+	 * @param p - integer denoting prisoner's personality
+	 * @param bias - double denoting the amount of bias for COOPERATE_BIAS or DEFECT_BIAS
+	 * *********/
 	public Prisoner(String fullName, boolean d, int p, double bias) {
 		
 		name = fullName;
 		defect = d;
 		personality = p;
-		if ( (personality == Prisoner.BAYESIAN) || (personality == Prisoner.TIT_FOR_TAT) ) ptree = new PrisonerTree();
+		if ( (personality == Prisoner.BAYESIAN) || (personality == Prisoner.TIT_FOR_TAT) ) ptree = new PrisonerTree(true);
 		this.bias = bias;
 		
 		if( (personality == Prisoner.DEFECT_BIAS) || (personality == Prisoner.COOPERATE_BIAS) ){
@@ -62,14 +78,18 @@ public class Prisoner {
 		}
 	}
 	
-	//each prisoner has their own tree of other previous prisoners' behavior
+	/**
+	 * Method for updating the Prisoner's own tree of other Prisoner objects. This is only used by BAYESIAN and TIT_FOR_TAT personalities
+	 * @param p - Prisoner object to be added to this Prisoner's tree
+	*/
 	public void updateSubjectiveTree(Prisoner p) {
 		ptree.add( p ); 
 	}
 	
 	
 	/***
-	 * @param Prisoner p - the prisoner that this prisoner is either cooperating with or defecting on
+	 * Executes a prisoner's dilemma iteration between the current Prisoner object and another player. 
+	 * @param p - the prisoner that this prisoner object is either cooperating with or defecting on. BAYESIAN and TIT_FOR_TAT use the argument Prisoner's previous behavior to determine how they should play this round 
 	 * @param return - true if defecting, false if cooperating
 	 * **/
 	public boolean executeDilemma(Prisoner p) {
@@ -88,14 +108,13 @@ public class Prisoner {
 				if(defect) prisoner.numDefects++;
 				if (prisoner.defect) {
 					
-					//priors[0] = P ( neutral player )
-					//priors[1] = P ( defect player )
-					//priors[2] = P ( co-op player )
+					//priors[0] = P ( defect player )
+					//priors[1] = P ( co-op player )
 					try{
 						prisoner.conditionals[0] = .90; //assuming defect bot
 						prisoner.conditionals[1] = .10; //assuming cooperate bot
 						
-						prisoner.priors = probability.bayes(prisoner.priors, prisoner.conditionals);
+						prisoner.priors = Stats.bayes(prisoner.priors, prisoner.conditionals);
 						
 						prisoner.retaliates = (prisoner.numDefects >= 1) ? true : false;
 						
@@ -111,7 +130,7 @@ public class Prisoner {
 						prisoner.conditionals[0] = .10; //assuming defect bot
 						prisoner.conditionals[1] = .90; //assuming cooperate bot
 
-						prisoner.priors = probability.bayes(prisoner.priors, prisoner.conditionals);
+						prisoner.priors = Stats.bayes(prisoner.priors, prisoner.conditionals);
 						
 						prisoner.retaliates = (prisoner.numDefects >= 1) ? false : true;
 						
@@ -121,8 +140,6 @@ public class Prisoner {
 						e.printStackTrace();
 					}
 				}
-				
-				//System.err.println("I think there's a "+ prisoner.priors[0] +" probability that " + p.name + " will defect");
 				
 				if (prisoner.priors[0] > .45) {
 					return true;
@@ -138,7 +155,7 @@ public class Prisoner {
 					return false;
 				}
 				
-				else if (prisoner.priors[0] < .45) {
+				else if (prisoner.priors[0] <= .45) {
 					return false;
 				}
 				
@@ -153,27 +170,35 @@ public class Prisoner {
 		}
 	}
 	
-	 public static String getBehavior(Prisoner p) {
-	    	switch(p.personality){
-	    	case Prisoner.BAYESIAN:
-	    		return "Bayesian";
-	    	case Prisoner.COOPERATE_BIAS:
-	    		return "Cooperate Bias";
-	    	case Prisoner.COOPERATE_BOT:
-	    		return "Cooperate robot";
-	    	case Prisoner.DEFECT_BIAS:
-	    		return "Defect Bias";
-	    	case Prisoner.DEFECT_BOT:
-	    		return "Defect Robot";
-	    	case Prisoner.RANDOM:
-	    		return "Random";
-	    	case Prisoner.TIT_FOR_TAT:
-	    		return "Tit for Tat";
-	    	default:
-	    		return "No Input Behavior (?)";
-	    	}
-	    }
+
+	/***
+	 * Converts the integer behavior of the {@link Prisoner} object to a string
+	 * @param p - Prisoner object 
+	 * **/
+    public static String getBehavior(Prisoner p) {
+    	switch(p.personality){
+    	case Prisoner.BAYESIAN:
+    		return "Bayesian";
+    	case Prisoner.COOPERATE_BIAS:
+    		return "Cooperate Bias";
+    	case Prisoner.COOPERATE_BOT:
+    		return "Cooperate robot";
+    	case Prisoner.DEFECT_BIAS:
+    		return "Defect Bias";
+    	case Prisoner.DEFECT_BOT:
+    		return "Defect Robot";
+    	case Prisoner.RANDOM:
+    		return "Random";
+    	case Prisoner.TIT_FOR_TAT:
+    		return "Tit for Tat";
+    	default:
+    		return "No Input Behavior (?)";
+    	}
+    }
 	
+    /**
+     * Initializes prior and conditional probabilities for the BAYESIAN Prisoner to use
+     * */
 	public void initBayesian(){
 		priors = new double [2];
 		conditionals = new double [2];
@@ -181,8 +206,10 @@ public class Prisoner {
 		priors[0] = 0.5;
 		priors[1] = 0.5;
 		
-		probability = new Stats();
+		//pRetaliates[0] = 0.5;
 	}
+	
+	
 	
 	
 }
