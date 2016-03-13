@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Main {
 	private static java.util.Random random;
-	private static int numberPlayers = 0, maxPlayers = 3500000;
+	private static int maxPlayers = 3500000;
 
 	/*********
 	 * Main method.
@@ -96,12 +96,12 @@ public class Main {
 			prisoners.add(new Prisoner("Satan Baalzebub", true, Prisoner.DEFECT_BOT));
 			prisoners.add(new Prisoner("God", true, Prisoner.RANDOM));
 			prisoners.add(new Prisoner("Darth Vader", true, Prisoner.DEFECT_BIAS));
-			prisoners.add(new Prisoner("Elua", false, Prisoner.COOPERATE_BIAS));
-			prisoners.add(new Prisoner("Lloyd Christmas", false, Prisoner.COOPERATE_BOT));
+			//prisoners.add(new Prisoner("Elua", false, Prisoner.COOPERATE_BIAS));
+			//prisoners.add(new Prisoner("Lloyd Christmas", false, Prisoner.COOPERATE_BOT));
 			
 			addRandomPlayers(prisoners, 2);
 			
-			startGame(prisoners, 101, false);
+			startGame(prisoners, 1010, false);
 			
 			Stats.sort(prisoners, true);
 			

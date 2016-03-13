@@ -248,7 +248,7 @@ public class PrisonerTree {
             }
         }
     
-    //L-x-R, return type of ArrayList<Prisoner>
+    //L-x-R, return type of ArrayList<Prisoner> 
     public ArrayList<Prisoner> getPrisonerList() { 
     	 ArrayList<Prisoner> list = new ArrayList<Prisoner>();
     	 getPrisonerList(list, root);

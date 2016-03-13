@@ -2,7 +2,6 @@ package dilemma;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 
 
@@ -155,50 +154,7 @@ public class Stats {
    		return r;
    	}
    	
-   	public static double standardError(double [] dataSetA, double [] dataSetB) {
-   		double r = correlation(dataSetA, dataSetB);
-   		return Math.sqrt( (1 - r*r) / (dataSetA.length - 2) );
-   	}
    	
-   	public static BigDecimal standardError2(double [] dataSetA, double [] dataSetB) {
-   		BigDecimal R = BigDecimal.valueOf( correlation(dataSetA, dataSetB) );
-		
-		//SEr = ( (1 - r2) / (n - 2) )^1/2
-		BigDecimal standardError = BigDecimal.ONE.min( R.pow(2) );
-		standardError = Stats.sqrt( standardError.divide( BigDecimal.valueOf( dataSetA.length - 2 ), 5, RoundingMode.HALF_EVEN ) );
-		return standardError;
-   	}
-   	
-   	
-   	public static double betaI(int x, int y){
-   		BigInteger numerator = factorial(x - 1).multiply( factorial(y - 1) );
-   		BigInteger denominator = factorial(x + y - 1);
-   		return numerator.divide(denominator).doubleValue();
-   	}
-   	
-   	public static double betaI(int DF, double t) {
-   		double firstParam = DF / 2.0, secParam = 0.5, thirdParam = DF / ( DF + Math.pow(t, 2));
-   		
-   		return DF * 0.5 * t;
-   	}
-   	
-   	public static double beta(int n, int i) {
-   		BigInteger one = factorial(n-1);
-   		one = one.multiply( BigInteger.valueOf(2) );
-   		BigInteger two = factorial( one.intValue() );
-   		BigInteger three = factorial(n + 2);
-   		BigInteger ans = two.divide(three);
-   		return ans.doubleValue();
-   	}
-   	
-   	public static double tTest(double [] dataSet, double mu) {
-   		return ( mean(dataSet) - mu) / ( stdDev(dataSet) / dataSet.length );
-   	}
-   	
-   	public static double tTest(double r, int n) {
-   		return Math.abs(r) * ( Math.sqrt(n - 2) ) / ( Math.sqrt(1 - r*r) );
-   	}
-	
 	/**
    	 * Calculates the alpha for a correlation in a dataset using Fisher's P-value computation
    	 * @param a - array of x axis values
